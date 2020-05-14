@@ -15,8 +15,10 @@ app.use(express.static("public"));
 let connectionString =
   "mongodb+srv://annie:annie123@cluster0-l9rcs.mongodb.net/Todoapp?retryWrites=true&w=majority ";
 mongodb.connect(
-  connectionString,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  },
   function (err, client) {
     db = client.db();
     app.listen(port);
@@ -24,7 +26,9 @@ mongodb.connect(
 );
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 
 function passwordProtected(req, res, next) {
   res.set("WWW-Authenticate", 'Basic realm="Simple Todo App"');
@@ -47,18 +51,17 @@ app.get("/", function (req, res) {
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple To-Do App</title>
+  <title style="color:white" >Goal Creator</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   </head>
   <body>
   <div class="container">
-  <h1 class="display-4 text-center py-1">To-Do App!</h1>
-  
+  <h1 class="display-4 text-center py-1">Goal Creator</h1>
   <div class="jumbotron p-3 shadow-sm">
   <form id="create-form" action="/create-item" method="POST">
   <div class="d-flex align-items-center">
   <input id="create-field" name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
-  <button class="btn btn-primary">Add New Item</button>
+  <button class="btn btn-primary">Add New Goal</button>
   </div>
   </form> 
   </div>
@@ -84,7 +87,9 @@ app.post("/create-item", function (req, res) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  db.collection("items").insertOne({ text: safeText }, function (err, info) {
+  db.collection("items").insertOne({
+    text: safeText
+  }, function (err, info) {
     res.json(info.ops[0]);
   });
 });
@@ -94,9 +99,13 @@ app.post("/update-item", function (req, res) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  db.collection("items").findOneAndUpdate(
-    { _id: new mongodb.ObjectId(req.body.id) },
-    { $set: { text: safeText } },
+  db.collection("items").findOneAndUpdate({
+      _id: new mongodb.ObjectId(req.body.id)
+    }, {
+      $set: {
+        text: safeText
+      }
+    },
     function () {
       res.send("Success");
     }
@@ -104,8 +113,9 @@ app.post("/update-item", function (req, res) {
 });
 
 app.post("/delete-item", function (req, res) {
-  db.collection("items").deleteOne(
-    { _id: new mongodb.ObjectId(req.body.id) },
+  db.collection("items").deleteOne({
+      _id: new mongodb.ObjectId(req.body.id)
+    },
     function () {
       res.send("Success");
     }
