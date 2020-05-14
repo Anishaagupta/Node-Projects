@@ -15,9 +15,10 @@ app.use(express.static("public"));
 let connectionString =
   "mongodb+srv://annie:annie123@cluster0-l9rcs.mongodb.net/Todoapp?retryWrites=true&w=majority ";
 mongodb.connect(
-  connectionString, {
+  connectionString,
+  {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   },
   function (err, client) {
     db = client.db();
@@ -26,9 +27,11 @@ mongodb.connect(
 );
 
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: false
-}));
+app.use(
+  express.urlencoded({
+    extended: false,
+  })
+);
 
 function passwordProtected(req, res, next) {
   res.set("WWW-Authenticate", 'Basic realm="Simple Todo App"');
@@ -53,6 +56,7 @@ app.get("/", function (req, res) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title style="color:white" >Goal Creator</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <style> body{ background-image: url("i.jpg");}</style>
   </head>
   <body>
   <div class="container">
@@ -87,11 +91,14 @@ app.post("/create-item", function (req, res) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  db.collection("items").insertOne({
-    text: safeText
-  }, function (err, info) {
-    res.json(info.ops[0]);
-  });
+  db.collection("items").insertOne(
+    {
+      text: safeText,
+    },
+    function (err, info) {
+      res.json(info.ops[0]);
+    }
+  );
 });
 
 app.post("/update-item", function (req, res) {
@@ -99,12 +106,14 @@ app.post("/update-item", function (req, res) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  db.collection("items").findOneAndUpdate({
-      _id: new mongodb.ObjectId(req.body.id)
-    }, {
+  db.collection("items").findOneAndUpdate(
+    {
+      _id: new mongodb.ObjectId(req.body.id),
+    },
+    {
       $set: {
-        text: safeText
-      }
+        text: safeText,
+      },
     },
     function () {
       res.send("Success");
@@ -113,8 +122,9 @@ app.post("/update-item", function (req, res) {
 });
 
 app.post("/delete-item", function (req, res) {
-  db.collection("items").deleteOne({
-      _id: new mongodb.ObjectId(req.body.id)
+  db.collection("items").deleteOne(
+    {
+      _id: new mongodb.ObjectId(req.body.id),
     },
     function () {
       res.send("Success");
